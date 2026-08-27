@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { userSignInSchema } from "../schemas";
 import { UserController } from "../controllers";
-import { ValidationMiddleware } from "../middlewares";
+import { UserMiddleware, ValidationMiddleware } from "../middlewares";
 
 const router = Router();
 
@@ -12,6 +12,6 @@ router.post(
   UserController.signIn,
 );
 
-router.get("/profile");
+router.get("/profile",UserMiddleware.verifyToken,UserController.getProfile);
 
 export default router;

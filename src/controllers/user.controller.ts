@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { UserSignInBody, UserSignInResponse } from "../types";
+import { UserGetProfileResponse, UserSignInBody, UserSignInResponse } from "../types";
 import { UserService } from "../services";
 
 export class UserController {
@@ -16,6 +16,22 @@ export class UserController {
       });
     } catch (error) {
       next(error);
+    }
+  };
+
+  static getProfile = async (
+    req: Request,
+    res: Response<UserGetProfileResponse>,
+    next: NextFunction,
+  ): Promise<void> => {
+      try {
+          const user = req.user
+          res.status(200).json({
+              success: true,
+              user
+          })
+      } catch (error) {
+          next(error)
     }
   };
 }

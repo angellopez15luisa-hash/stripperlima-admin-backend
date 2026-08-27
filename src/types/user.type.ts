@@ -1,7 +1,8 @@
 import z from "zod";
-import { userSignInSchema } from "../schemas";
-import { User } from "../models";
+import { userSchema, userSignInSchema } from "../schemas";
 import { MessageResponse } from "./custom";
+
+type User = z.infer<typeof userSchema>;
 
 export type UserSignInBody = z.infer<typeof userSignInSchema>["body"];
 
@@ -11,4 +12,8 @@ export type UserGenerateJWT = {
 
 export type UserSignInResponse = Omit<MessageResponse, "message"> & {
   token: string;
+};
+
+export type UserGetProfileResponse = Omit<MessageResponse, "message"> & {
+  user: Omit<User, "password">;
 };
