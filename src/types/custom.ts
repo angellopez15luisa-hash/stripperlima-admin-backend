@@ -9,12 +9,12 @@ export class CustomError extends Error {
   }
 }
 
-export type IMessageResponse = {
-  message: string;
-  success: boolean;
-};
-
 export type MessageResponse = {
   message: string;
   success: boolean;
 };
+
+// export type MessageResponse = {
+//   message: string;
+//   success: boolean;
+// };

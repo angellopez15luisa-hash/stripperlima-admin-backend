@@ -5,10 +5,11 @@ import morgan from "morgan";
 import cors from "cors";
 import { corsConfig } from "./config";
 import userRoutes from "./routes/user.route";
-import { CustomError } from "./types/custom";
+ 
 
 // Solo lo he puesto aqui por mientras para que no me salga error en los req.file
 import multer from "multer";
+import { CustomError } from "./types";
 
 const app = express();
 
