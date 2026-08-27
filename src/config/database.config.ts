@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize";
 import "dotenv/config";
+import { User,initUserModel } from '../models'
 
 const dbConfig = require("../../db/config");
 
@@ -30,7 +31,21 @@ const sequelize = new Sequelize(
   },
 );
 
-export { sequelize };
+initUserModel(sequelize)
+
+const models = {
+    User
+}
+
+Object.values(models).forEach((model: any) => {
+    if (typeof model.associate === 'function') {
+        model.associate(models)
+    }
+})
+
+export type DBModels = typeof models
+
+export { sequelize,User };
 
 export const testConnection = async () => {
   try {
