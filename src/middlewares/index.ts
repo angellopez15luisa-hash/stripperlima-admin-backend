@@ -1,1 +1,1 @@
-export { validateSchema } from './validation.middleware'
+export { ValidationMiddleware } from './validation.middleware'

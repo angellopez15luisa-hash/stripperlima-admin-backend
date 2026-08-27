@@ -1,21 +1,22 @@
 import z from "zod";
 export const userSchema = z.object({
   id: z.number(),
-  name: z.string({
-    required_error: "El name es requerido",
-    invalid_type_error: "El name debe ser una cadena de texto",
-  }),
+  name: z
+    .string({
+      invalid_type_error: "El name debe ser una cadena de texto",
+    })
+    .min(1, { message: "El name es requerido" }),
   email: z
     .string({
-      required_error: "El email es requerido",
       invalid_type_error: "El email debe ser una cadena de texto",
     })
+    .min(1, { message: "El email es requerido" })
     .email({ message: "El email debe tener un formato valido" }),
   password: z
     .string({
-      required_error: "El password es requerido",
       invalid_type_error: "El password debe ser una cadena de texto",
     })
+    .min(1, { message: "El password es requerido" })
     .min(8, { message: "El password debe tener al menos 8 caracteres" })
     .max(15, { message: "El password debe tener maximo 20 caracteres" }),
   role: z.string(),
