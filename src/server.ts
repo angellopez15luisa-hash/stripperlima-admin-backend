@@ -1,7 +1,8 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import { corsConfig } from "./config/cors.config";
+import { corsConfig } from "./config";
+ 
 
 const app = express();
 
