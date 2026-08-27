@@ -1,9 +1,9 @@
 import { Router } from "express";
+import { validateSchema } from "../middlewares";
+import { userSignInSchema } from "../schemas";
 
+const router = Router();
 
-const router = Router()
+router.post("/sign-in", validateSchema(userSignInSchema));
 
-router.post('/sign-in',)
-
-
-export default router
+export default router;
