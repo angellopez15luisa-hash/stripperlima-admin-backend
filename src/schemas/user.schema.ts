@@ -22,11 +22,21 @@ export const userSchema = z.object({
   role: z.string(),
   resetPasswordToken: z.string(),
   resetPasswordExpires: z.date(),
+  frontendUrl: z
+    .string({ message: "El frontendUrl debe ser una cadena de texto" })
+    .min(1, "El frontendUrl es obligatorio"),
 });
 
 export const userSignInSchema = z.object({
   body: userSchema.pick({
     email: true,
     password: true,
+  }),
+});
+
+export const userForgotPasswordSchema = z.object({
+  body: userSchema.pick({
+    email: true,
+    frontendUrl: true,
   }),
 });

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { userSignInSchema } from "../schemas";
+import { userForgotPasswordSchema, userSignInSchema } from "../schemas";
 import { UserController } from "../controllers";
 import { UserMiddleware, ValidationMiddleware } from "../middlewares";
 
@@ -12,6 +12,12 @@ router.post(
   UserController.signIn,
 );
 
-router.get("/profile",UserMiddleware.verifyToken,UserController.getProfile);
+router.get("/profile", UserMiddleware.verifyToken, UserController.getProfile);
+
+router.post(
+  "/forgot-password",
+  ValidationMiddleware.validateSchema(userForgotPasswordSchema),
+  UserController.forgotPassword,
+);
 
 export default router;
