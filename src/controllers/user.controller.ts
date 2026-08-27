@@ -5,6 +5,7 @@ import {
   UserGetProfileResponse,
   UserSignInBody,
   UserSignInResponse,
+  UserVerifyResetToken,
 } from "../types";
 import { UserService } from "../services";
 
@@ -48,6 +49,22 @@ export class UserController {
   ): Promise<void> => {
     try {
       const message = await UserService.forgotPassword(req.body);
+      res.status(200).json({
+        success: true,
+        message,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static verifyResetToken = async (
+    req: Request<UserVerifyResetToken>,
+    res: Response<MessageResponse>,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const message = await UserService.verifyResetToken(req.params.token);
       res.status(200).json({
         success: true,
         message,

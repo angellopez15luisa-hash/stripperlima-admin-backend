@@ -3,6 +3,7 @@ import {
   userForgotPasswordSchema,
   userSchema,
   userSignInSchema,
+  userVerifyResetTokenSchema,
 } from "../schemas";
 import { MessageResponse } from "./custom";
 
@@ -12,7 +13,9 @@ export type UserSignInBody = z.infer<typeof userSignInSchema>["body"];
 
 export type UserForgotPasswordBody = z.infer<
   typeof userForgotPasswordSchema
->["body"];
+  >["body"];
+
+  export type UserVerifyResetToken = z.infer<typeof userVerifyResetTokenSchema>['params']
 
 export type UserGenerateJWT = {
   id: User["id"];

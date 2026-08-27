@@ -25,6 +25,9 @@ export const userSchema = z.object({
   frontendUrl: z
     .string({ message: "El frontendUrl debe ser una cadena de texto" })
     .min(1, "El frontendUrl es obligatorio"),
+  token: z
+    .string({ invalid_type_error: "El token debe ser una cadena de texto" })
+    .min(1, { message: "El token es requerido" }),
 });
 
 export const userSignInSchema = z.object({
@@ -38,5 +41,11 @@ export const userForgotPasswordSchema = z.object({
   body: userSchema.pick({
     email: true,
     frontendUrl: true,
+  }),
+});
+
+export const userVerifyResetTokenSchema = z.object({
+  params: userSchema.pick({
+    token: true,
   }),
 });

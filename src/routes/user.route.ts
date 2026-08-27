@@ -1,6 +1,10 @@
 import { Router } from "express";
 
-import { userForgotPasswordSchema, userSignInSchema } from "../schemas";
+import {
+  userForgotPasswordSchema,
+  userSignInSchema,
+  userVerifyResetTokenSchema,
+} from "../schemas";
 import { UserController } from "../controllers";
 import { UserMiddleware, ValidationMiddleware } from "../middlewares";
 
@@ -18,6 +22,12 @@ router.post(
   "/forgot-password",
   ValidationMiddleware.validateSchema(userForgotPasswordSchema),
   UserController.forgotPassword,
+);
+
+router.get(
+  "/verify-reset-token/:token",
+  ValidationMiddleware.validateSchema(userVerifyResetTokenSchema),
+  UserController.verifyResetToken,
 );
 
 export default router;

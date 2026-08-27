@@ -1,6 +1,11 @@
+import { Op } from "sequelize";
 import { checkPassword, generateJWT, sendPasswordResetEmail } from "../helpers";
 import { User } from "../models";
-import { UserForgotPasswordBody, UserSignInBody } from "../types";
+import {
+  UserForgotPasswordBody,
+  UserSignInBody,
+  UserVerifyResetToken,
+} from "../types";
 import { CustomError } from "../types/custom";
 import crypto from "crypto";
 
@@ -43,5 +48,24 @@ export class UserService {
     await sendPasswordResetEmail(user.email, resetUrl);
 
     return "Se ha enviado un enlace de recuperacion a tu correo.";
+  };
+
+  static verifyResetToken = async (
+    token: UserVerifyResetToken["token"],
+  ): Promise<string> => {
+    const user = await User.findOne({
+      where: {
+        resetPasswordToken: token,
+        resetPasswordExpires: {
+          [Op.gt]: new Date(),
+        },
+      },
+    });
+    if (!user)
+      throw new CustomError(
+        "El enlace de recuperación es inválido o ha expirado.",
+        404,
+      );
+    return 'Token valido'
   };
 }
