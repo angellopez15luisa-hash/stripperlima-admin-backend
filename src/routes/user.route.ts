@@ -46,4 +46,5 @@ router.post(
   ],
   UserController.updatePassword,
 );
+
 export default router;

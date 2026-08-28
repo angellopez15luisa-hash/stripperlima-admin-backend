@@ -29,7 +29,7 @@ export type UserResetPasswordParams = z.infer<
   typeof userResetPasswordSchema
 >["params"];
 
-export type UserUpdatePasswordBody = z.infer<typeof userUpdatePasswordSchema>;
+export type UserUpdatePasswordBody = z.infer<typeof userUpdatePasswordSchema>['body'];
 
 export type UserGenerateJWT = {
   id: User["id"];

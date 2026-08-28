@@ -73,7 +73,9 @@ export const userResetPasswordSchema = z.object({
   }),
 });
 
-export const userUpdatePasswordSchema = userSchema.pick({
-  currentPassword: true,
-  newPassword: true,
+export const userUpdatePasswordSchema = z.object({
+  body: userSchema.pick({
+    currentPassword: true,
+    newPassword: true,
+  }),
 });
