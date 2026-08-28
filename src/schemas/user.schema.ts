@@ -28,6 +28,20 @@ export const userSchema = z.object({
   token: z
     .string({ invalid_type_error: "El token debe ser una cadena de texto" })
     .min(1, { message: "El token es requerido" }),
+  currentPassword: z
+    .string({
+      invalid_type_error: "* El password actual debe ser una cadena de texto",
+    })
+    .min(1, { message: "* El password actual es obligatorio" })
+    .min(8, {
+      message: "* El password actual debe tener al menos 8 caracteres",
+    }),
+  newPassword: z
+    .string({
+      invalid_type_error: "* El nuevo password debe ser una cadena de texto",
+    })
+    .min(1, { message: "* El new password es obligatorio" })
+    .min(8, { message: "* El password debe tener al menos 8 caracteres" }),
 });
 
 export const userSignInSchema = z.object({
@@ -48,4 +62,18 @@ export const userVerifyResetTokenSchema = z.object({
   params: userSchema.pick({
     token: true,
   }),
+});
+
+export const userResetPasswordSchema = z.object({
+  params: userSchema.pick({
+    token: true,
+  }),
+  body: userSchema.pick({
+    newPassword: true,
+  }),
+});
+
+export const userUpdatePasswordSchema = userSchema.pick({
+  currentPassword: true,
+  newPassword: true,
 });

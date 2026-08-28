@@ -3,8 +3,11 @@ import {
   MessageResponse,
   UserForgotPasswordBody,
   UserGetProfileResponse,
+  UserResetPasswordBody,
+  UserResetPasswordParams,
   UserSignInBody,
   UserSignInResponse,
+  UserUpdatePasswordBody,
   UserVerifyResetToken,
 } from "../types";
 import { UserService } from "../services";
@@ -64,10 +67,45 @@ export class UserController {
     next: NextFunction,
   ): Promise<void> => {
     try {
-      const message = await UserService.verifyResetToken(req.params.token);
+      await UserService.verifyToken(req.params.token);
+      res.status(200).json({
+        success: true,
+        message: "Token valido",
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static resetPassword = async (
+    req: Request<UserResetPasswordParams, {}, UserResetPasswordBody>,
+    res: Response<MessageResponse>,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const message = await UserService.resetPassword(
+        req.params.token,
+        req.body.newPassword,
+      );
       res.status(200).json({
         success: true,
         message,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static updatePassword = async (
+    req: Request<{}, {}, UserUpdatePasswordBody>,
+    res: Response<MessageResponse>,
+    next: NextFunction,
+  ): Promise<void> => {
+    try {
+      const message = await UserService.updatePassword(req.user.id, req.body);
+      res.status(200).json({
+        message,
+        success: true,
       });
     } catch (error) {
       next(error);

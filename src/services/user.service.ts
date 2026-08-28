@@ -1,9 +1,17 @@
 import { Op } from "sequelize";
-import { checkPassword, generateJWT, sendPasswordResetEmail } from "../helpers";
+import {
+  checkPassword,
+  generateJWT,
+  hash,
+  sendPasswordResetEmail,
+} from "../helpers";
 import { User } from "../models";
 import {
   UserForgotPasswordBody,
+  UserResetPasswordBody,
+  UserResetPasswordParams,
   UserSignInBody,
+  UserUpdatePasswordBody,
   UserVerifyResetToken,
 } from "../types";
 import { CustomError } from "../types/custom";
@@ -32,7 +40,10 @@ export class UserService {
       );
     //   1.- Generamos el token y la expiracion
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hora
+    //   const resetTokenExpires = new Date(Date.now() + 3600000); // 1 hora
+    //   const resetTokenExpires = new Date(Date.now() + 20000); // 20 segundos
+
+    const resetTokenExpires = new Date(Date.now() + 600000); // 10 minutos
 
     //   2.- Guardamos en la base de datos
     user.resetPasswordToken = resetToken;
@@ -50,9 +61,9 @@ export class UserService {
     return "Se ha enviado un enlace de recuperacion a tu correo.";
   };
 
-  static verifyResetToken = async (
+  static verifyToken = async (
     token: UserVerifyResetToken["token"],
-  ): Promise<string> => {
+  ): Promise<User> => {
     const user = await User.findOne({
       where: {
         resetPasswordToken: token,
@@ -66,6 +77,43 @@ export class UserService {
         "El enlace de recuperación es inválido o ha expirado.",
         404,
       );
-    return 'Token valido'
+    return user;
+  };
+
+  static resetPassword = async (
+    token: UserResetPasswordParams["token"],
+    newPassword: UserResetPasswordBody["newPassword"],
+  ): Promise<string> => {
+    const user = await this.verifyToken(token);
+    user.password = await hash(newPassword);
+
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await user.save();
+
+    return "Tu password se ha restablecido satisfactoriamente.";
+  };
+
+  static updatePassword = async (
+    id: User["id"],
+    data: UserUpdatePasswordBody,
+  ): Promise<string> => {
+    const { currentPassword, newPassword } = data;
+
+    const user = await User.findByPk(id);
+    if (!user) throw new CustomError("Usuario no encontrado", 404);
+
+    const isPasswordCorrect = await checkPassword(
+      currentPassword,
+      user.password,
+    );
+    if (!isPasswordCorrect)
+      throw new CustomError("El password actual es incorrecto", 400);
+
+    const hashedNewPassword = await hash(newPassword);
+    user.password = hashedNewPassword;
+    await user.save();
+    return "Password actualizado satisfactoriamente";
   };
 }

@@ -2,11 +2,13 @@ import { Router } from "express";
 
 import {
   userForgotPasswordSchema,
+  userResetPasswordSchema,
   userSignInSchema,
   userVerifyResetTokenSchema,
 } from "../schemas";
 import { UserController } from "../controllers";
 import { UserMiddleware, ValidationMiddleware } from "../middlewares";
+import { userUpdatePasswordSchema } from "../schemas/user.schema";
 
 const router = Router();
 
@@ -30,4 +32,18 @@ router.get(
   UserController.verifyResetToken,
 );
 
+router.post(
+  "/reset-password/:token",
+  ValidationMiddleware.validateSchema(userResetPasswordSchema),
+  UserController.resetPassword,
+);
+
+router.post(
+  "/update-password",
+  [
+    UserMiddleware.verifyToken,
+    ValidationMiddleware.validateSchema(userUpdatePasswordSchema),
+  ],
+  UserController.updatePassword,
+);
 export default router;
