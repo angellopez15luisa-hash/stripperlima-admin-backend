@@ -18,6 +18,15 @@ export class GeneralSetting extends Model<
   declare public socialLinks: object | null;
   declare public banners: object | null;
 
+  // Campos de la sección Aron
+  declare public titleAron: string;
+  declare public subtitleAron: string;
+  declare public titleEditorAron: string;
+  declare public descriptionEditorAron: string;
+  declare public listLabelsEditorAron: object | null;
+  declare public textHtmlEditorAron: string;
+  declare public galeryImagesAron: object | null;
+
   public static associate(models: DBModels) {}
 }
 
@@ -42,6 +51,34 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
         allowNull: false,
       },
       banners: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
+      titleAron: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      subtitleAron: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      titleEditorAron: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      descriptionEditorAron: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      listLabelsEditorAron: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
+      textHtmlEditorAron: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      galeryImagesAron: {
         type: DataTypes.JSON,
         allowNull: false,
       },

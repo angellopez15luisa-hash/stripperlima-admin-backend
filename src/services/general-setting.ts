@@ -1,13 +1,11 @@
 import {
-    deleteFromCloudinary,
-    getPublicIdFromUrl,
-    uploadToCloudinary,
+  deleteFromCloudinary,
+  getPublicIdFromUrl,
+  uploadToCloudinary,
 } from "../helpers/cloudinary.helper";
 import { GeneralSetting } from "../models";
 import { CustomError } from "../types";
-import {
-    GeneralSettingResponse
-} from "../types/general-setting";
+import { GeneralSettingResponse } from "../types/general-setting";
 
 export class GeneralSettingService {
   static getData = async (): Promise<GeneralSettingResponse> => {
@@ -115,6 +113,23 @@ export class GeneralSettingService {
         data.banners = JSON.parse(data.banners);
       } catch (error) {
         console.error("Error parseando banners:", error);
+      }
+    }
+    if (
+      data.listLabelsEditorAron &&
+      typeof data.listLabelsEditorAron === "string"
+    ) {
+      try {
+        data.listLabelsEditorAron = JSON.parse(data.listLabelsEditorAron);
+      } catch (error) {
+        console.error("Error parseando list_labels_editor_aron:", error);
+      }
+    }
+    if (data.galeryImagesAron && typeof data.galeryImagesAron === "string") {
+      try {
+        data.galeryImagesAron = JSON.parse(data.galeryImagesAron);
+      } catch (error) {
+        console.error("Error parseando galery_images_aron:", error);
       }
     }
     return data;
