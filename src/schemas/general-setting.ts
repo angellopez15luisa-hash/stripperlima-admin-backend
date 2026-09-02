@@ -1,5 +1,5 @@
 import z from "zod";
-import { messageResponseSchema } from "./custom.schema";
+import { messageResponseSchema } from "../routes/custom.schema";
 
 export const generalSettingSchema = z.object({
   id: z.number(),

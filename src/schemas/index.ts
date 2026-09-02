@@ -4,6 +4,6 @@ export {
   userForgotPasswordSchema,
   userVerifyResetTokenSchema,
   userResetPasswordSchema,
-  userUpdatePasswordSchema
+  userUpdatePasswordSchema,
 } from "./user.schema";
-export { messageResponseSchema }  from './custom.schema'
+export { messageResponseSchema } from "../routes/custom.schema";
