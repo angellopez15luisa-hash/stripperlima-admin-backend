@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize";
 import "dotenv/config";
-import { User,initUserModel } from '../models'
+import { User,initUserModel,GeneralSetting,initGeneralSettingModel } from '../models'
 
 const dbConfig = require("../../db/config");
 
@@ -32,9 +32,11 @@ const sequelize = new Sequelize(
 );
 
 initUserModel(sequelize)
+initGeneralSettingModel(sequelize)
 
 const models = {
-    User
+  User,
+  GeneralSetting
 }
 
 Object.values(models).forEach((model: any) => {
@@ -45,7 +47,7 @@ Object.values(models).forEach((model: any) => {
 
 export type DBModels = typeof models
 
-export { sequelize,User };
+export { sequelize,User,GeneralSetting };
 
 export const testConnection = async () => {
   try {

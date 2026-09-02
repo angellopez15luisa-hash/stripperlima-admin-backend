@@ -6,3 +6,4 @@ export {
   userResetPasswordSchema,
   userUpdatePasswordSchema
 } from "./user.schema";
+export { messageResponseSchema }  from './custom.schema'

@@ -10,3 +10,10 @@ export {
   UserUpdatePasswordBody,
 } from "./user.type";
 export { CustomError, MessageResponse } from "./custom";
+export {
+  GeneralSetting,
+  GeneralSettingDataResponse,
+  GeneralSettingResponse,
+  GeneralSettingUpdateBody,
+  GeneralSettingUpdateParams,
+} from "./general-setting";
