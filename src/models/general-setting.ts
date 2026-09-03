@@ -27,6 +27,11 @@ export class GeneralSetting extends Model<
   declare public textHtmlEditorAron: string;
   declare public galeryImagesAron: object | null;
 
+  // Campos de la seccion Servicios
+  declare public titleHeaderServices: string;
+  declare public descriptionHeaderServices: string;
+  declare public catalogGalleryServices: object | null;
+
   public static associate(models: DBModels) {}
 }
 
@@ -79,6 +84,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
         allowNull: false,
       },
       galeryImagesAron: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
+      titleHeaderServices: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      descriptionHeaderServices: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      catalogGalleryServices: {
         type: DataTypes.JSON,
         allowNull: false,
       },

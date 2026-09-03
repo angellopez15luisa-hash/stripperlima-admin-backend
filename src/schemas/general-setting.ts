@@ -78,6 +78,33 @@ export const generalSettingSchema = z.object({
       }),
     )
     .min(1, { message: "Debe haber al menos una imagen en la galería" }),
+
+  // --- NUEVOS CAMPOS DE LA SECCIÓN SERVICIOS ---
+  titleHeaderServices: z
+    .string({ invalid_type_error: "El título del Servicio debe ser texto" })
+    .min(1, { message: "El título del Servicio es requerido" }),
+
+  descriptionHeaderServices: z
+    .string({ invalid_type_error: "La descripción debe ser texto" })
+    .min(1, { message: "La descripción es requerida" }),
+
+  catalogGalleryServices: z
+    .array(
+      z.object({
+        id: z.number({ message: "El ID del servicio es requerido" }),
+        title: z
+          .string({ message: "El titulo del servicio debe ser texto" })
+          .min(1, { message: "El titulo del servicio es requerida" }),
+        description: z
+          .string({ message: "La descripcion del servicio debe ser texto" })
+          .min(1, { message: "La descripcion del servicio es requerida" }),
+        image: z
+          .string({ message: "La imagen es requerida" })
+          .min(1, { message: "La imagen no puede estar vacía" }),
+        active: z.boolean({ message: "El estado activo debe ser un booleano" }),
+      }),
+    )
+    .min(1, { message: "Debe haber al menos una imagen en la galería" }),
 });
 
 export const generalSettingUpdateSchema = z.object({
@@ -118,6 +145,9 @@ export const generalSettingResponseSchema = generalSettingSchema.pick({
   listLabelsEditorAron: true,
   textHtmlEditorAron: true,
   galeryImagesAron: true,
+  titleHeaderServices: true,
+  descriptionHeaderServices: true,
+  catalogGalleryServices: true,
 });
 
 export const generalSettingDataResponseSchema = z.object({
