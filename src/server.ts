@@ -22,8 +22,17 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
-app.use("/api/users", userRoutes);
-app.use("/api/general-settings", generalSettings);
+// 1. Creas tu función middleware una sola vez
+const antiCacheMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+};
+
+
+app.use("/api/users", antiCacheMiddleware, userRoutes);
+app.use("/api/general-settings", antiCacheMiddleware, generalSettings);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.status(404).send("¡Ruta no encontrada!");
