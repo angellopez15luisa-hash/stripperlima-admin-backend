@@ -14,8 +14,8 @@ import { CustomError } from "./types";
 const app = express();
 
 // Aumenta el límite a 10mb (o lo que consideres prudente para tus imágenes)
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(cors(corsConfig));
 app.use(morgan("dev"));

@@ -23,6 +23,8 @@ export const uploadToCloudinary = async (fileStr: string | null | undefined, fol
       return fileStr;
     }
 
+    console.log("Cloud Name configurado:", process.env.CLOUDINARY_CLOUD_NAME);
+
     // Si viene en formato Base64 (data:image/...)
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       folder: folderName,
