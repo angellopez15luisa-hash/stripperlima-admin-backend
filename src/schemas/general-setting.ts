@@ -7,12 +7,12 @@ export const generalSettingSchema = z.object({
     .string({
       invalid_type_error: "El titulo debe ser una cadena de texto",
     })
-    .min(1, { message: "El titulo es requerido" }),
+    .min(1, { message: "El titulo es requerido" }).optional(),
   descriptionStart: z
     .string({
       invalid_type_error: "La descripcion debe ser una cadena de texto",
     })
-    .min(1, { message: "La descripcion es requerida" }),
+    .min(1, { message: "La descripcion es requerida" }).optional(),
   socialLinks: z
     .array(
       z.object({
@@ -41,17 +41,17 @@ export const generalSettingSchema = z.object({
   // --- NUEVOS CAMPOS DE LA SECCIÓN ARON ---
   titleAron: z
     .string({ invalid_type_error: "El título de Aron debe ser texto" })
-    .min(1, { message: "El título de Aron es requerido" }),
+    .min(1, { message: "El título de Aron es requerido" }).optional(),
 
   subtitleAron: z
     .string({ invalid_type_error: "El subtítulo de Aron debe ser texto" })
-    .min(1, { message: "El subtítulo de Aron es requerido" }),
+    .min(1, { message: "El subtítulo de Aron es requerido" }).optional(),
   titleEditorAron: z
     .string({ invalid_type_error: "El titulo debe ser texto" })
-    .min(1, { message: "El titulo es requerida" }),
+    .min(1, { message: "El titulo es requerida" }).optional(),
   descriptionEditorAron: z
     .string({ invalid_type_error: "La descripción debe ser texto" })
-    .min(1, { message: "La descripción es requerida" }),
+    .min(1, { message: "La descripción es requerida" }).optional(),
 
   listLabelsEditorAron: z
     .array(
@@ -62,11 +62,11 @@ export const generalSettingSchema = z.object({
           .min(1, { message: "La viñeta no puede estar vacía" }),
       }),
     )
-    .min(1, { message: "Debe haber al menos una viñeta" }),
+    .min(1, { message: "Debe haber al menos una viñeta" }).optional(),
 
   textHtmlEditorAron: z
     .string({ invalid_type_error: "El contenido HTML debe ser texto" })
-    .min(1, { message: "El contenido HTML es requerido" }),
+    .min(1, { message: "El contenido HTML es requerido" }).optional(),
 
   galeryImagesAron: z
     .array(
@@ -77,16 +77,16 @@ export const generalSettingSchema = z.object({
           .min(1, { message: "La URL de la imagen es requerida" }),
       }),
     )
-    .min(1, { message: "Debe haber al menos una imagen en la galería" }),
+    .min(1, { message: "Debe haber al menos una imagen en la galería" }).optional(),
 
   // --- NUEVOS CAMPOS DE LA SECCIÓN SERVICIOS ---
   titleHeaderServices: z
     .string({ invalid_type_error: "El título del Servicio debe ser texto" })
-    .min(1, { message: "El título del Servicio es requerido" }),
+    .min(1, { message: "El título del Servicio es requerido" }).optional(),
 
   descriptionHeaderServices: z
     .string({ invalid_type_error: "La descripción debe ser texto" })
-    .min(1, { message: "La descripción es requerida" }),
+    .min(1, { message: "La descripción es requerida" }).optional(),
 
   catalogGalleryServices: z
     .array(
@@ -104,7 +104,31 @@ export const generalSettingSchema = z.object({
         active: z.boolean({ message: "El estado activo debe ser un booleano" }),
       }),
     )
-    .min(1, { message: "Debe haber al menos una imagen en la galería" }),
+    .min(1, { message: "Debe haber al menos una imagen en la galería" }).optional(),
+
+  titleHeaderModels: z
+    .string({ invalid_type_error: "El título del Modelo debe ser texto" })
+    .min(1, { message: "El título del Modelo es requerido" }).optional(),
+  descriptionHeaderMdels: z
+    .string({ invalid_type_error: "La descripción debe ser texto" })
+    .min(1, { message: "La descripción es requerida" }).optional(),
+  catalogGalleryModels: z
+    .array(
+      z.object({
+        id: z.number({ message: "El ID del Modelo es requerido" }),
+        name: z
+          .string({ message: "El nombre del modelo debe ser texto" })
+          .min(1, { message: "El nombre del modelo es requerida" }),
+        category: z.enum(["bailarinas", "strippers"], {
+          message: "La categoría debe ser bailarinas o strippers",
+        }),
+        image: z
+          .string({ message: "La imagen es requerida" })
+          .min(1, { message: "La imagen no puede estar vacía" }),
+        active: z.boolean({ message: "El estado activo debe ser un booleano" }),
+      }),
+    )
+    .min(1, { message: "Debe haber al menos una imagen en la galería" }).optional(),
 });
 
 export const generalSettingUpdateSchema = z.object({
@@ -148,6 +172,9 @@ export const generalSettingResponseSchema = generalSettingSchema.pick({
   titleHeaderServices: true,
   descriptionHeaderServices: true,
   catalogGalleryServices: true,
+  titleHeaderModels: true,
+  descriptionHeaderMdels: true,
+  catalogGalleryModels: true,
 });
 
 export const generalSettingDataResponseSchema = z.object({

@@ -33,6 +33,7 @@ export class ValidationMiddleware {
         console.log("❌ ERROR DE ZOD EN MIDDLEWARE:", error);
 
         if (error instanceof ZodError) {
+          console.log(error)
           return res.status(400).json({
             message: "Error de validación en los datos de entrada",
             errors: error.issues.map((err) => ({

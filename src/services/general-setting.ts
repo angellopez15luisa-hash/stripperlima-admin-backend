@@ -140,7 +140,47 @@ export class GeneralSettingService {
     }
 
     
-  // 3. Procesar CatalogGalleryServices (Catálogo de Servicios)
+    // 3. Procesar GaleryImagesAron (Galería Ampliada de 6 Fijas)
+    if (data.galeryImagesAron && Array.isArray(data.galeryImagesAron)) {
+      const rawGalery = generalSetting.galeryImagesAron;
+      const galeryArray = Array.isArray(rawGalery)
+        ? rawGalery
+        : typeof rawGalery === "string"
+          ? JSON.parse(rawGalery)
+          : [];
+
+      const existingGaleryMap = new Map(
+        galeryArray.map((g: any) => [g.id, g.url]),
+      );
+
+      const processedGalery = await Promise.all(
+        data.galeryImagesAron.map(async (galeryItem: any) => {
+          // Ojo: en la estructura de Aron el campo de la imagen se llama .url
+          if (galeryItem.url && galeryItem.url.startsWith("data:image")) {
+            const oldImageUrl = existingGaleryMap.get(galeryItem.id) as string;
+            if (oldImageUrl) {
+              const publicId = getPublicIdFromUrl(oldImageUrl);
+              if (publicId) {
+                await deleteFromCloudinary(publicId);
+              }
+            }
+            const secureUrl = await uploadToCloudinary(
+              galeryItem.url,
+              "landing_gallery_aron", // Carpeta en Cloudinary para la galería de Aron
+            );
+            return {
+              ...galeryItem,
+              url: secureUrl, // Reemplazamos el Base64 en la propiedad url
+            };
+          }
+          return galeryItem;
+        }),
+      );
+      data.galeryImagesAron = processedGalery;
+    }
+
+    
+  // 4. Procesar CatalogGalleryServices (Catálogo de Servicios)
     if (data.catalogGalleryServices && Array.isArray(data.catalogGalleryServices)) {
       const rawServices = generalSetting.catalogGalleryServices;
       const servicesArray = Array.isArray(rawServices)
@@ -179,44 +219,45 @@ export class GeneralSettingService {
       data.catalogGalleryServices = processedServices;
     }
 
-    // 4. Procesar GaleryImagesAron (Galería Ampliada de 6 Fijas)
-    if (data.galeryImagesAron && Array.isArray(data.galeryImagesAron)) {
-      const rawGalery = generalSetting.galeryImagesAron;
-      const galeryArray = Array.isArray(rawGalery)
-        ? rawGalery
-        : typeof rawGalery === "string"
-          ? JSON.parse(rawGalery)
+    // 5. Procesar CatalogGalleryModels (Catálogo de Modelos)
+      if (data.catalogGalleryModels && Array.isArray(data.catalogGalleryModels)) {
+      const rawModels = generalSetting.catalogGalleryModels;
+      const modelsArray = Array.isArray(rawModels)
+        ? rawModels
+        : typeof rawModels === "string"
+          ? JSON.parse(rawModels)
           : [];
 
-      const existingGaleryMap = new Map(
-        galeryArray.map((g: any) => [g.id, g.url]),
+      const existingModelsMap = new Map(
+        modelsArray.map((s: any) => [s.id, s.image]),
       );
 
-      const processedGalery = await Promise.all(
-        data.galeryImagesAron.map(async (galeryItem: any) => {
-          // Ojo: en la estructura de Aron el campo de la imagen se llama .url
-          if (galeryItem.url && galeryItem.url.startsWith("data:image")) {
-            const oldImageUrl = existingGaleryMap.get(galeryItem.id) as string;
+      const processedModels = await Promise.all(
+        data.catalogGalleryModels.map(async (modelItem: any) => {
+          if (modelItem.image && modelItem.image.startsWith("data:image")) {
+            const oldImageUrl = existingModelsMap.get(modelItem.id) as string;
             if (oldImageUrl) {
               const publicId = getPublicIdFromUrl(oldImageUrl);
               if (publicId) {
-                await deleteFromCloudinary(publicId);
+                  await deleteFromCloudinary(publicId);
+                  console.log("catalogGalleryServices eliminado")
               }
             }
             const secureUrl = await uploadToCloudinary(
-              galeryItem.url,
-              "landing_gallery_aron", // Carpeta en Cloudinary para la galería de Aron
+              modelItem.image,
+              "landing_models",
             );
             return {
-              ...galeryItem,
-              url: secureUrl, // Reemplazamos el Base64 en la propiedad url
+              ...modelItem,
+              image: secureUrl,
             };
           }
-          return galeryItem;
+          return modelItem;
         }),
       );
-      data.galeryImagesAron = processedGalery;
+      data.catalogGalleryModels = processedModels;
     }
+
 
     // 5. Actualizamos la base de datos con todos los JSONs ya procesados y limpios de Base64
     await generalSetting.update(data);
@@ -270,6 +311,16 @@ export class GeneralSettingService {
         data.catalogGalleryServices = JSON.parse(data.catalogGalleryServices);
       } catch (error) {
         console.error("Error parseando galery_images_aron:", error);
+      }
+    }
+     if (
+      data.catalogGalleryModels &&
+      typeof data.catalogGalleryModels === "string"
+    ) {
+      try {
+        data.catalogGalleryModels = JSON.parse(data.catalogGalleryModels);
+      } catch (error) {
+        console.error("Error parseando catalogGalleryModels:", error);
       }
     }
 

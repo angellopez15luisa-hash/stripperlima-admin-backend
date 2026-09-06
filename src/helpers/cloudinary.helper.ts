@@ -23,8 +23,6 @@ export const uploadToCloudinary = async (fileStr: string | null | undefined, fol
       return fileStr;
     }
 
-    console.log("Cloud Name configurado:", process.env.CLOUDINARY_CLOUD_NAME);
-
     // Si viene en formato Base64 (data:image/...)
     const uploadResponse = await cloudinary.uploader.upload(fileStr, {
       folder: folderName,
@@ -32,12 +30,12 @@ export const uploadToCloudinary = async (fileStr: string | null | undefined, fol
 
     return uploadResponse.secure_url; // Retorna la URL segura https://...
   } catch (error) {
-    // console.error('Error al subir a Cloudinary:', error);
-    // throw new Error('Fallo la subida de la imagen a Cloudinary');
+    console.error('Error al subir a Cloudinary:', error);
+    throw new Error('Fallo la subida de la imagen a Cloudinary');
 
-    console.error('Error detallado al subir a Cloudinary:', error);
-    // Lanzamos el mensaje real que devuelve Cloudinary para verlo en los logs de Railway
-    throw new Error(`Error Cloudinary: ${error.message || JSON.stringify(error)}`);
+    // console.error('Error detallado al subir a Cloudinary:', error);
+    // // Lanzamos el mensaje real que devuelve Cloudinary para verlo en los logs de Railway
+    // throw new Error(`Error Cloudinary: ${error.message || JSON.stringify(error)}`);
   }
 };
 

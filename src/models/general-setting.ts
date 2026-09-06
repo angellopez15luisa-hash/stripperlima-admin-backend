@@ -32,6 +32,11 @@ export class GeneralSetting extends Model<
   declare public descriptionHeaderServices: string;
   declare public catalogGalleryServices: object | null;
 
+  // Campos de la seccion Modelos
+  declare public titleHeaderModels: string;
+  declare public descriptionHeaderModels: string;
+  declare public catalogGalleryModels: object | null;
+
   public static associate(models: DBModels) {}
 }
 
@@ -96,6 +101,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
         allowNull: false,
       },
       catalogGalleryServices: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
+      titleHeaderModels: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      descriptionHeaderModels: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      catalogGalleryModels: {
         type: DataTypes.JSON,
         allowNull: false,
       },
