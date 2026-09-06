@@ -264,7 +264,7 @@ export class GeneralSettingService {
       data.catalogGalleryModels = processedModels;
     }
 
-     // 6. Procesar CatalogGalleryEvents (Catálogo de Eventos)
+    // 6. Procesar CatalogGalleryEvents (Catálogo de Eventos)
     if (data.catalogGalleryEvents && Array.isArray(data.catalogGalleryEvents)) {
       const rawEvents = generalSetting.catalogGalleryEvents;
       const eventsArray = Array.isArray(rawEvents)
@@ -301,6 +301,49 @@ export class GeneralSettingService {
         }),
       );
       data.catalogGalleryEvents = processedEvents;
+    }
+
+  // 7. Procesar CatalogGalleryVideos (Catálogo de Videos)
+    if (data.catalogGalleryVideos && Array.isArray(data.catalogGalleryVideos)) {
+      const rawVideos = generalSetting.catalogGalleryVideos;
+      const videosArray = Array.isArray(rawVideos)
+        ? rawVideos
+        : typeof rawVideos === "string"
+          ? JSON.parse(rawVideos)
+          : [];
+
+      const existingVideosMap = new Map(
+        videosArray.map((s: any) => [s.id, s.videoUrl]), // Mapeamos por ID y URL de video
+      );
+
+      const processedVideos = await Promise.all(
+        data.catalogGalleryVideos.map(async (videoItem: any) => {
+          // CORREGIDO: Evaluamos videoItem.videoUrl en lugar de .image
+          if (videoItem.videoUrl && videoItem.videoUrl.startsWith("data:video")) { 
+            // Nota: Si tus videos vienen como archivos locales en base64 para subirlos a la nube:
+            const oldVideoUrl = existingVideosMap.get(videoItem.id) as string;
+            if (oldVideoUrl) {
+              const publicId = getPublicIdFromUrl(oldVideoUrl);
+              if (publicId) {
+                await deleteFromCloudinary(publicId);
+                console.log("Video anterior eliminado de Cloudinary");
+              }
+            }
+            const secureUrl = await uploadToCloudinary(
+              videoItem.videoUrl,
+              "landing_videos",
+            );
+            return {
+              ...videoItem,
+              videoUrl: secureUrl,
+            };
+          }
+          return videoItem;
+        }),
+      );
+
+      // Asignamos el array limpio y plano (nunca con JSON.stringify)
+      data.catalogGalleryVideos = processedVideos;
     }
 
     // 5. Actualizamos la base de datos con todos los JSONs ya procesados y limpios de Base64
@@ -375,6 +418,17 @@ export class GeneralSettingService {
         data.catalogGalleryEvents = JSON.parse(data.catalogGalleryEvents);
       } catch (error) {
         console.error("Error parseando catalogGalleryEvents:", error);
+      }
+    }
+
+    if (
+      data.catalogGalleryVideos &&
+      typeof data.catalogGalleryVideos === "string"
+    ) {
+      try {
+        data.catalogGalleryVideos = JSON.parse(data.catalogGalleryVideos);
+      } catch (error) {
+        console.error("Error parseando catalogGalleryVideos:", error);
       }
     }
 
