@@ -5,7 +5,10 @@ import {
 } from "../helpers/cloudinary.helper";
 import { GeneralSetting } from "../models";
 import { CustomError } from "../types";
-import { GeneralSettingResponse, GeneralSettingUpdateBody } from "../types/general-setting";
+import {
+  GeneralSettingResponse,
+  GeneralSettingUpdateBody,
+} from "../types/general-setting";
 
 export class GeneralSettingService {
   static getData = async (): Promise<GeneralSettingResponse> => {
@@ -139,7 +142,6 @@ export class GeneralSettingService {
       data.banners = processedBanners;
     }
 
-    
     // 3. Procesar GaleryImagesAron (Galería Ampliada de 6 Fijas)
     if (data.galeryImagesAron && Array.isArray(data.galeryImagesAron)) {
       const rawGalery = generalSetting.galeryImagesAron;
@@ -179,9 +181,11 @@ export class GeneralSettingService {
       data.galeryImagesAron = processedGalery;
     }
 
-    
-  // 4. Procesar CatalogGalleryServices (Catálogo de Servicios)
-    if (data.catalogGalleryServices && Array.isArray(data.catalogGalleryServices)) {
+    // 4. Procesar CatalogGalleryServices (Catálogo de Servicios)
+    if (
+      data.catalogGalleryServices &&
+      Array.isArray(data.catalogGalleryServices)
+    ) {
       const rawServices = generalSetting.catalogGalleryServices;
       const servicesArray = Array.isArray(rawServices)
         ? rawServices
@@ -196,12 +200,14 @@ export class GeneralSettingService {
       const processedServices = await Promise.all(
         data.catalogGalleryServices.map(async (serviceItem: any) => {
           if (serviceItem.image && serviceItem.image.startsWith("data:image")) {
-            const oldImageUrl = existingServicesMap.get(serviceItem.id) as string;
+            const oldImageUrl = existingServicesMap.get(
+              serviceItem.id,
+            ) as string;
             if (oldImageUrl) {
               const publicId = getPublicIdFromUrl(oldImageUrl);
               if (publicId) {
-                  await deleteFromCloudinary(publicId);
-                  console.log("catalogGalleryServices eliminado")
+                await deleteFromCloudinary(publicId);
+                console.log("catalogGalleryServices eliminado");
               }
             }
             const secureUrl = await uploadToCloudinary(
@@ -220,7 +226,7 @@ export class GeneralSettingService {
     }
 
     // 5. Procesar CatalogGalleryModels (Catálogo de Modelos)
-      if (data.catalogGalleryModels && Array.isArray(data.catalogGalleryModels)) {
+    if (data.catalogGalleryModels && Array.isArray(data.catalogGalleryModels)) {
       const rawModels = generalSetting.catalogGalleryModels;
       const modelsArray = Array.isArray(rawModels)
         ? rawModels
@@ -239,8 +245,8 @@ export class GeneralSettingService {
             if (oldImageUrl) {
               const publicId = getPublicIdFromUrl(oldImageUrl);
               if (publicId) {
-                  await deleteFromCloudinary(publicId);
-                  console.log("catalogGalleryServices eliminado")
+                await deleteFromCloudinary(publicId);
+                console.log("catalogGalleryServices eliminado");
               }
             }
             const secureUrl = await uploadToCloudinary(
@@ -258,6 +264,44 @@ export class GeneralSettingService {
       data.catalogGalleryModels = processedModels;
     }
 
+     // 6. Procesar CatalogGalleryEvents (Catálogo de Eventos)
+    if (data.catalogGalleryEvents && Array.isArray(data.catalogGalleryEvents)) {
+      const rawEvents = generalSetting.catalogGalleryEvents;
+      const eventsArray = Array.isArray(rawEvents)
+        ? rawEvents
+        : typeof rawEvents === "string"
+          ? JSON.parse(rawEvents)
+          : [];
+
+      const existingEventsMap = new Map(
+        eventsArray.map((s: any) => [s.id, s.image]),
+      );
+
+      const processedEvents = await Promise.all(
+        data.catalogGalleryEvents.map(async (eventItem: any) => {
+          if (eventItem.image && eventItem.image.startsWith("data:image")) {
+            const oldImageUrl = existingEventsMap.get(eventItem.id) as string;
+            if (oldImageUrl) {
+              const publicId = getPublicIdFromUrl(oldImageUrl);
+              if (publicId) {
+                await deleteFromCloudinary(publicId);
+                console.log("catalogGalleryEvents eliminado");
+              }
+            }
+            const secureUrl = await uploadToCloudinary(
+              eventItem.image,
+              "landing_events",
+            );
+            return {
+              ...eventItem,
+              image: secureUrl,
+            };
+          }
+          return eventItem;
+        }),
+      );
+      data.catalogGalleryEvents = processedEvents;
+    }
 
     // 5. Actualizamos la base de datos con todos los JSONs ya procesados y limpios de Base64
     await generalSetting.update(data);
@@ -313,7 +357,7 @@ export class GeneralSettingService {
         console.error("Error parseando galery_images_aron:", error);
       }
     }
-     if (
+    if (
       data.catalogGalleryModels &&
       typeof data.catalogGalleryModels === "string"
     ) {
@@ -321,6 +365,16 @@ export class GeneralSettingService {
         data.catalogGalleryModels = JSON.parse(data.catalogGalleryModels);
       } catch (error) {
         console.error("Error parseando catalogGalleryModels:", error);
+      }
+    }
+    if (
+      data.catalogGalleryEvents &&
+      typeof data.catalogGalleryEvents === "string"
+    ) {
+      try {
+        data.catalogGalleryEvents = JSON.parse(data.catalogGalleryEvents);
+      } catch (error) {
+        console.error("Error parseando catalogGalleryEvents:", error);
       }
     }
 

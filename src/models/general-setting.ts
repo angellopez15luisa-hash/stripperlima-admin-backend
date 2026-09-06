@@ -37,6 +37,11 @@ export class GeneralSetting extends Model<
   declare public descriptionHeaderModels: string;
   declare public catalogGalleryModels: object | null;
 
+  //Campos de la seccion Galeria Eventos
+  declare public titleHeaderGalleryEvents: string;
+  declare public descriptionHeaderGalleryEvents: string;
+  declare public catalogGalleryEvents: object | null;
+
   public static associate(models: DBModels) {}
 }
 
@@ -97,7 +102,7 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
         allowNull: false,
       },
       descriptionHeaderServices: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       catalogGalleryServices: {
@@ -109,10 +114,22 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
         allowNull: false,
       },
       descriptionHeaderModels: {
-        type: DataTypes.TEXT,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       catalogGalleryModels: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
+      titleHeaderGalleryEvents: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      descriptionHeaderGalleryEvents: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      catalogGalleryEvents: {
         type: DataTypes.JSON,
         allowNull: false,
       },

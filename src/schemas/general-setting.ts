@@ -129,6 +129,30 @@ export const generalSettingSchema = z.object({
       }),
     )
     .min(1, { message: "Debe haber al menos una imagen en la galería" }).optional(),
+  
+  titleHeaderGalleryEvents: z
+    .string({ invalid_type_error: "El título de la Galeria debe ser texto" })
+    .min(1, { message: "El título de la Galeria es requerido" }).optional(),
+  descriptionHeaderGalleryEvents: z
+    .string({ invalid_type_error: "La descripción debe ser texto" })
+    .min(1, { message: "La descripción es requerida" }).optional(),
+  catalogGalleryEvents: z
+    .array(
+      z.object({
+        id: z.number({ message: "El ID de la Galeria es requerido" }),
+        name: z
+          .string({ message: "El nombre de la galeria debe ser texto" })
+          .min(1, { message: "El nombre de la galeria es requerida" }),
+        category: z.enum(["despedida_vip"], {
+          message: "La categoría debe ser Despedida VIP",
+        }),
+        image: z
+          .string({ message: "La imagen es requerida" })
+          .min(1, { message: "La imagen no puede estar vacía" }),
+        active: z.boolean({ message: "El estado activo debe ser un booleano" }),
+      }),
+    )
+    .min(1, { message: "Debe haber al menos una imagen en la galería" }).optional(),
 });
 
 export const generalSettingUpdateSchema = z.object({
@@ -175,6 +199,9 @@ export const generalSettingResponseSchema = generalSettingSchema.pick({
   titleHeaderModels: true,
   descriptionHeaderMdels: true,
   catalogGalleryModels: true,
+  titleHeaderGalleryEvents: true,
+  descriptionHeaderGalleryEvents: true,
+  catalogGalleryEvents:true
 });
 
 export const generalSettingDataResponseSchema = z.object({
