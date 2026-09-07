@@ -190,7 +190,41 @@ export const generalSettingSchema = z.object({
         videoUrl: z
           .string({ message: "La url del video debe ser texto" })
           .min(1, { message: "La url del video es requerida" })
-          .url({ message: 'Debe ser una URL válida' }),
+          .url({ message: "Debe ser una URL válida" }),
+        active: z.boolean({ message: "El estado activo debe ser un booleano" }),
+      }),
+    )
+    .min(1, { message: "Debe haber al menos una imagen en la galería" })
+    .optional(),
+
+  titleHeaderPackages: z
+    .string({ invalid_type_error: "El título debe ser texto" })
+    .min(1, { message: "El título es requerido" })
+    .optional(),
+  descriptionHeaderPackages: z
+    .string({ invalid_type_error: "La descripción debe ser texto" })
+    .min(1, { message: "La descripción es requerida" })
+    .optional(),
+  catalogGalleryPackages: z
+    .array(
+      z.object({
+        id: z.number({ message: "El ID de la Galeria es requerido" }),
+        icon: z.string(),
+        title: z
+          .string({ message: "El nombre de la gal debe ser texto" })
+          .min(1, { message: "El nombre de la galeria es requerida" }),
+        description: z
+          .string({ message: "La descripcion ser texto" })
+          .min(1, { message: "La descripcion es requerida" }),
+        features: z
+          .array(
+            z
+              .string({
+                invalid_type_error: "Cada característica debe ser un texto",
+              })
+              .min(1, { message: "La característica no puede estar vacía" }),
+          )
+          .optional(),
         active: z.boolean({ message: "El estado activo debe ser un booleano" }),
       }),
     )
@@ -248,6 +282,9 @@ export const generalSettingResponseSchema = generalSettingSchema.pick({
   titleHeaderGalleryVideos: true,
   descriptionHeaderGalleryVideos: true,
   catalogGalleryVideos: true,
+  titleHeaderPackages: true,
+  descriptionHeaderPackages: true,
+  catalogGalleryPackages: true,
 });
 
 export const generalSettingDataResponseSchema = z.object({

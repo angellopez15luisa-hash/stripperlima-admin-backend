@@ -47,6 +47,10 @@ export class GeneralSetting extends Model<
   declare public descriptionHeaderGalleryVideos: string;
   declare public catalogGalleryVideos: object | null;
 
+  //Campos de la seccion Galeria de Paquetes
+  declare public titleHeaderPackages: string;
+  declare public descriptionHeaderPackages: string;
+  declare public catalogGalleryPackages: object | null;
 
   public static associate(models: DBModels) {}
 }
@@ -141,17 +145,28 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       },
       titleHeaderGalleryVideos: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
       },
       descriptionHeaderGalleryVideos: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
       },
       catalogGalleryVideos: {
         type: DataTypes.JSON,
-        allowNull:false
-      }
-
+        allowNull: false,
+      },
+      titleHeaderPackages: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      descriptionHeaderPackages: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      catalogGalleryPackages: {
+        type: DataTypes.JSON,
+        allowNull: false,
+      },
     },
     {
       sequelize,

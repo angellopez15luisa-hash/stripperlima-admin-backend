@@ -303,7 +303,7 @@ export class GeneralSettingService {
       data.catalogGalleryEvents = processedEvents;
     }
 
-  // 7. Procesar CatalogGalleryVideos (Catálogo de Videos)
+    // 7. Procesar CatalogGalleryVideos (Catálogo de Videos)
     if (data.catalogGalleryVideos && Array.isArray(data.catalogGalleryVideos)) {
       const rawVideos = generalSetting.catalogGalleryVideos;
       const videosArray = Array.isArray(rawVideos)
@@ -319,7 +319,10 @@ export class GeneralSettingService {
       const processedVideos = await Promise.all(
         data.catalogGalleryVideos.map(async (videoItem: any) => {
           // CORREGIDO: Evaluamos videoItem.videoUrl en lugar de .image
-          if (videoItem.videoUrl && videoItem.videoUrl.startsWith("data:video")) { 
+          if (
+            videoItem.videoUrl &&
+            videoItem.videoUrl.startsWith("data:video")
+          ) {
             // Nota: Si tus videos vienen como archivos locales en base64 para subirlos a la nube:
             const oldVideoUrl = existingVideosMap.get(videoItem.id) as string;
             if (oldVideoUrl) {
@@ -341,12 +344,47 @@ export class GeneralSettingService {
           return videoItem;
         }),
       );
-
       // Asignamos el array limpio y plano (nunca con JSON.stringify)
       data.catalogGalleryVideos = processedVideos;
     }
 
-    // 5. Actualizamos la base de datos con todos los JSONs ya procesados y limpios de Base64
+    // 8. Procesar CatalogGalleryPackages (Catálogo de Paquetes / Servicios)
+    if (data.catalogGalleryPackages && Array.isArray(data.catalogGalleryPackages)) {
+      const rawPackages = generalSetting.catalogGalleryPackages;
+      const packagesArray = Array.isArray(rawPackages)
+        ? rawPackages
+        : typeof rawPackages === "string"
+          ? JSON.parse(rawPackages)
+          : [];
+
+      // No requiere subida a la nube de imágenes/videos por cada item porque maneja iconos (strings), 
+      // pero mantenemos la estructura por si actualizas o mapeas los IDs correctamente.
+      const existingPackagesMap = new Map(
+        packagesArray.map((s: any) => [s.id, s]), 
+      );
+
+      const processedPackages = await Promise.all(
+        data.catalogGalleryPackages.map(async (packageItem: any) => {
+          // Si el paquete viene con algún archivo multimedia o necesita validación extra, 
+          // puedes evaluarlo aquí. Como maneja icon, title, description, features y active,
+          // simplemente retornamos el objeto conservando su estructura intacta y validada.
+          
+          return {
+            id: packageItem.id || Date.now(),
+            icon: packageItem.icon,
+            title: packageItem.title,
+            description: packageItem.description,
+            features: packageItem.features,
+            active: packageItem.active ?? true
+          };
+        }),
+      );
+      
+      // Asignamos el array procesado listo para guardarse
+      data.catalogGalleryPackages = processedPackages;
+    }
+
+
     await generalSetting.update(data);
 
     return "Los datos se actualizaron satisfactoriamente.";
@@ -429,6 +467,17 @@ export class GeneralSettingService {
         data.catalogGalleryVideos = JSON.parse(data.catalogGalleryVideos);
       } catch (error) {
         console.error("Error parseando catalogGalleryVideos:", error);
+      }
+    }
+
+    if (
+      data.catalogGalleryPackages &&
+      typeof data.catalogGalleryPackages === "string"
+    ) {
+      try {
+        data.catalogGalleryPackages = JSON.parse(data.catalogGalleryPackages);
+      } catch (error) {
+        console.error("Error parseando catalogGalleryPackages:", error);
       }
     }
 
