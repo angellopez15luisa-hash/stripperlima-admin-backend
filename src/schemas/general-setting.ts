@@ -211,8 +211,8 @@ export const generalSettingSchema = z.object({
         id: z.number({ message: "El ID de la Galeria es requerido" }),
         icon: z.string(),
         title: z
-          .string({ message: "El nombre de la gal debe ser texto" })
-          .min(1, { message: "El nombre de la galeria es requerida" }),
+          .string({ message: "El titulo debe ser texto" })
+          .min(1, { message: "El titulo es requerida" }),
         description: z
           .string({ message: "La descripcion ser texto" })
           .min(1, { message: "La descripcion es requerida" }),
@@ -230,6 +230,29 @@ export const generalSettingSchema = z.object({
     )
     .min(1, { message: "Debe haber al menos una imagen en la galería" })
     .optional(),
+
+  titleHeaderContact: z
+    .string({ invalid_type_error: "El título debe ser texto" })
+    .min(1, { message: "El título es requerido" })
+    .optional(),
+  descriptionHeaderContact: z
+    .string({ invalid_type_error: "La descripción debe ser texto" })
+    .min(1, { message: "La descripción es requerida" })
+    .optional(),
+  informationContact: z.object({
+    address: z
+      .string({ message: "* La direccion debe ser texto" })
+      .min(1, { message: "* La direccion es requerida" }),
+    phone: z
+      .string({ message: "* El telefono debe ser texto" })
+      .min(1, { message: "* La direccion es requerida" }),
+    email: z
+      .string({ message: "* El email debe ser texto" })
+      .min(1, { message: "* El email es requerida" }),
+    businessHours: z
+      .string({ message: "* El horario de atencion debe ser texto" })
+      .min(1, { message: "* El horario de atencion es requerida" }),
+  }),
 });
 
 export const generalSettingUpdateSchema = z.object({
@@ -285,6 +308,9 @@ export const generalSettingResponseSchema = generalSettingSchema.pick({
   titleHeaderPackages: true,
   descriptionHeaderPackages: true,
   catalogGalleryPackages: true,
+  titleHeaderContact: true,
+  descriptionHeaderContact: true,
+  informationContact:true
 });
 
 export const generalSettingDataResponseSchema = z.object({

@@ -51,6 +51,10 @@ export class GeneralSetting extends Model<
   declare public titleHeaderPackages: string;
   declare public descriptionHeaderPackages: string;
   declare public catalogGalleryPackages: object | null;
+  
+  declare public titleHeaderContact: string
+  declare public descriptionHeaderContact: string
+  declare public informationContact:object| null
 
   public static associate(models: DBModels) {}
 }
@@ -167,6 +171,20 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
         type: DataTypes.JSON,
         allowNull: false,
       },
+      titleHeaderContact: {
+        type: DataTypes.STRING,
+        allowNull:false
+      },
+      descriptionHeaderContact: {
+        type: DataTypes.STRING,
+        allowNull:false
+      },
+      informationContact: {
+        type: DataTypes.JSON,
+        allowNull:false
+      }
+
+
     },
     {
       sequelize,

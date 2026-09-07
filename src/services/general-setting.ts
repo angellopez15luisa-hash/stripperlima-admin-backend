@@ -349,7 +349,10 @@ export class GeneralSettingService {
     }
 
     // 8. Procesar CatalogGalleryPackages (Catálogo de Paquetes / Servicios)
-    if (data.catalogGalleryPackages && Array.isArray(data.catalogGalleryPackages)) {
+    if (
+      data.catalogGalleryPackages &&
+      Array.isArray(data.catalogGalleryPackages)
+    ) {
       const rawPackages = generalSetting.catalogGalleryPackages;
       const packagesArray = Array.isArray(rawPackages)
         ? rawPackages
@@ -357,33 +360,67 @@ export class GeneralSettingService {
           ? JSON.parse(rawPackages)
           : [];
 
-      // No requiere subida a la nube de imágenes/videos por cada item porque maneja iconos (strings), 
+      // No requiere subida a la nube de imágenes/videos por cada item porque maneja iconos (strings),
       // pero mantenemos la estructura por si actualizas o mapeas los IDs correctamente.
       const existingPackagesMap = new Map(
-        packagesArray.map((s: any) => [s.id, s]), 
+        packagesArray.map((s: any) => [s.id, s]),
       );
 
       const processedPackages = await Promise.all(
         data.catalogGalleryPackages.map(async (packageItem: any) => {
-          // Si el paquete viene con algún archivo multimedia o necesita validación extra, 
+          // Si el paquete viene con algún archivo multimedia o necesita validación extra,
           // puedes evaluarlo aquí. Como maneja icon, title, description, features y active,
           // simplemente retornamos el objeto conservando su estructura intacta y validada.
-          
+
           return {
             id: packageItem.id || Date.now(),
             icon: packageItem.icon,
             title: packageItem.title,
             description: packageItem.description,
             features: packageItem.features,
-            active: packageItem.active ?? true
+            active: packageItem.active ?? true,
           };
         }),
       );
-      
+
       // Asignamos el array procesado listo para guardarse
       data.catalogGalleryPackages = processedPackages;
     }
 
+    // 8. Procesar information_contact  (Informacion / Contacto)
+    if (data.informationContact) {
+      // Obtenemos el valor actual que está en la base de datos (por si viene como string JSON o ya como objeto)
+      const rawInfo = generalSetting.informationContact;
+      const currentInfo =
+        typeof rawInfo === "string" ? JSON.parse(rawInfo) : rawInfo || {};
+
+      // Extraemos la información que viene del cliente (data.information_contact)
+      const incomingInfo = data.informationContact;
+
+      // Construimos o fusionamos el objeto procesado manteniendo la estructura limpia
+      const processedInfo = {
+        address:
+          incomingInfo.address !== undefined
+            ? incomingInfo.address
+            : currentInfo.address,
+        phone:
+          incomingInfo.phone !== undefined
+            ? incomingInfo.phone
+            : currentInfo.phone,
+        email:
+          incomingInfo.email !== undefined
+            ? incomingInfo.email
+            : currentInfo.email,
+        businessHours:
+          incomingInfo.businessHours !== undefined
+            ? incomingInfo.businessHours
+            : currentInfo.businessHours || "",
+      };
+
+      // Asignamos el objeto listo (si tu backend espera stringify o el objeto directo según tu tipo de Sequelize,
+      // por lo general si es tipo JSON en Sequelize puedes pasar el objeto directo o un string parseado)
+      data.informationContact = processedInfo;
+    }
 
     await generalSetting.update(data);
 
@@ -478,6 +515,17 @@ export class GeneralSettingService {
         data.catalogGalleryPackages = JSON.parse(data.catalogGalleryPackages);
       } catch (error) {
         console.error("Error parseando catalogGalleryPackages:", error);
+      }
+    }
+
+    if (
+      data.informationContact &&
+      typeof data.informationContact === "string"
+    ) {
+      try {
+        data.informationContact = JSON.parse(data.informationContact);
+      } catch (error) {
+        console.error("Error parseando informationContact:", error);
       }
     }
 
