@@ -6,6 +6,8 @@ import { userVerifyResetTokenSchema } from "../schemas";
 
 const router = Router();
 
+router.get("/public", GeneralSettingController.getData);
+
 router.use(UserMiddleware.verifyToken);
 
 router.get("/", GeneralSettingController.getData);
