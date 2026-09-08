@@ -8,6 +8,7 @@ export const corsConfig: CorsOptions = {
       process.env.FRONTEND_URL_5175,
       process.env.FRONTEND_URL_5174,
       process.env.FRONTEND_URL,
+      process.env.FRONTEND_URL_STRIPPERLIMA,
       undefined, // Útil para Postman o peticiones server-to-server
     ];
     if (!origin || whitelist.includes(origin)) {
