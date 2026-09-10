@@ -51,10 +51,10 @@ export class GeneralSetting extends Model<
   declare public titleHeaderPackages: string;
   declare public descriptionHeaderPackages: string;
   declare public catalogGalleryPackages: object | null;
-  
-  declare public titleHeaderContact: string
-  declare public descriptionHeaderContact: string
-  declare public informationContact:object| null
+
+  declare public titleHeaderContact: string;
+  declare public descriptionHeaderContact: string;
+  declare public informationContact: object | null;
 
   public static associate(models: DBModels) {}
 }
@@ -78,10 +78,34 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       socialLinks: {
         type: DataTypes.JSON,
         allowNull: false,
+          get() {
+          const rawValue = this.getDataValue("socialLinks");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       banners: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("banners");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleAron: {
         type: DataTypes.STRING,
@@ -102,6 +126,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       listLabelsEditorAron: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("listLabelsEditorAron");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       textHtmlEditorAron: {
         type: DataTypes.TEXT,
@@ -110,6 +146,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       galeryImagesAron: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("galeryImagesAron");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleHeaderServices: {
         type: DataTypes.STRING,
@@ -122,6 +170,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       catalogGalleryServices: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("catalogGalleryServices");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleHeaderModels: {
         type: DataTypes.STRING,
@@ -134,6 +194,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       catalogGalleryModels: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("catalogGalleryModels");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleHeaderGalleryEvents: {
         type: DataTypes.STRING,
@@ -146,6 +218,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       catalogGalleryEvents: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("catalogGalleryEvents");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleHeaderGalleryVideos: {
         type: DataTypes.STRING,
@@ -158,6 +242,18 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       catalogGalleryVideos: {
         type: DataTypes.JSON,
         allowNull: false,
+        get() {
+          const rawValue = this.getDataValue("catalogGalleryVideos");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleHeaderPackages: {
         type: DataTypes.STRING,
@@ -170,21 +266,43 @@ export const initGeneralSettingModel = (sequelize: Sequelize) => {
       catalogGalleryPackages: {
         type: DataTypes.JSON,
         allowNull: false,
+          get() {
+          const rawValue = this.getDataValue("catalogGalleryPackages");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
       },
       titleHeaderContact: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
       },
       descriptionHeaderContact: {
         type: DataTypes.STRING,
-        allowNull:false
+        allowNull: false,
       },
       informationContact: {
         type: DataTypes.JSON,
-        allowNull:false
-      }
-
-
+        allowNull: false,
+         get() {
+          const rawValue = this.getDataValue("informationContact");
+          // Si viene como string por capricho de la BD, lo parseamos a fuerzas; si ya es objeto, lo retorna tal cual
+          if (typeof rawValue === "string") {
+            try {
+              return JSON.parse(rawValue);
+            } catch (e) {
+              return rawValue;
+            }
+          }
+          return rawValue;
+        },
+      },
     },
     {
       sequelize,
